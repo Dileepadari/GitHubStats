@@ -1,4 +1,5 @@
 import { getCachedData, setCachedData } from './db';
+import { errorMessage } from './utils';
 
 const GITHUB_GRAPHQL_ENDPOINT = 'https://api.github.com/graphql';
 const GITHUB_REST_ENDPOINT = 'https://api.github.com';
@@ -169,8 +170,47 @@ query userInfo($login: String!) {
 }
 `;
 
+
+/**
+ * GitHub's own username rule: 1 to 39 characters, letters, digits and single
+ * hyphens, never leading or trailing, never doubled.
+ *
+ * This is a security boundary, not tidiness. `fetchViaRest` interpolates the
+ * name straight into an API path, and a URL resolves `..` before it is sent:
+ * `/users/../orgs/x` becomes `/orgs/x`. Because the REST call carries this
+ * deployment's `Authorization: Bearer`, an unvalidated name let any caller of
+ * a public card endpoint aim the server's own token at any GitHub API path and
+ * read the response back. The GraphQL path is parameterised and was never
+ * affected, but a malformed login makes GraphQL throw, and the catch falls
+ * back to REST - so the safe path led to the unsafe one.
+ */
+const GITHUB_USERNAME = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+
+export function isValidGitHubUsername(value: string): boolean {
+  return GITHUB_USERNAME.test(value);
+}
+
+/** The slice of GitHub's contribution calendar this file reads. */
+interface CalendarDay {
+  contributionCount?: number;
+  contributionLevel?: string;
+  date?: string;
+  weekday?: number;
+  color?: string;
+}
+interface CalendarWeek {
+  contributionDays?: CalendarDay[];
+}
+
 export async function fetchGitHubData(username: string): Promise<GitHubUserRawData> {
   const cleanUsername = username.trim().toLowerCase();
+
+  // Before the cache lookup as well as before the fetch: an unchecked name
+  // would otherwise become a cache key, and a poisoned entry outlives the
+  // request that created it.
+  if (!isValidGitHubUsername(cleanUsername)) {
+    throw new Error(`"${username}" is not a valid GitHub username.`);
+  }
   const cacheKey = `gh:v2:${cleanUsername}`;
 
   // Try PostgreSQL cache first
@@ -185,8 +225,8 @@ export async function fetchGitHubData(username: string): Promise<GitHubUserRawDa
   if (token) {
     try {
       userData = await fetchViaGraphQL(cleanUsername);
-    } catch (err: any) {
-      console.warn(`GraphQL fetch failed for ${cleanUsername}, falling back to REST:`, err.message);
+    } catch (err: unknown) {
+      console.warn(`GraphQL fetch failed for ${cleanUsername}, falling back to REST:`, errorMessage(err));
       userData = await fetchViaRest(cleanUsername);
     }
   } else {
@@ -269,10 +309,10 @@ async function fetchViaGraphQL(username: string): Promise<GitHubUserRawData> {
   const calendar = collection.contributionCalendar || { weeks: [] };
   const allDays: Array<{ date: string; count: number; level: number }> = [];
 
-  const calendarWeeks = (calendar.weeks || []).map((w: any) => ({
-    days: (w.contributionDays || []).map((d: any) => {
+  const calendarWeeks = (calendar.weeks || []).map((w: CalendarWeek) => ({
+    days: (w.contributionDays || []).map((d: CalendarDay) => {
       const dayObj = {
-        date: d.date,
+        date: d.date || '',
         count: d.contributionCount || 0,
         level: d.contributionLevel === 'FOURTH_QUARTILE' ? 4 :
                d.contributionLevel === 'THIRD_QUARTILE' ? 3 :
@@ -326,7 +366,7 @@ async function fetchViaGraphQL(username: string): Promise<GitHubUserRawData> {
 }
 
 async function fetchViaRest(username: string): Promise<GitHubUserRawData> {
-  const userRes = await fetch(`${GITHUB_REST_ENDPOINT}/users/${username}`, {
+  const userRes = await fetch(`${GITHUB_REST_ENDPOINT}/users/${encodeURIComponent(username)}`, {
     headers: getHeaders(),
   });
 
@@ -341,7 +381,7 @@ async function fetchViaRest(username: string): Promise<GitHubUserRawData> {
 
   // Fetch repos (up to 100)
   const reposRes = await fetch(
-    `${GITHUB_REST_ENDPOINT}/users/${username}/repos?per_page=100&sort=updated`,
+    `${GITHUB_REST_ENDPOINT}/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`,
     { headers: getHeaders() }
   );
 
