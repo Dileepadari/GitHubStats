@@ -1,3 +1,13 @@
+/**
+ * `GET /api/issues` - issues opened and closed.
+ *
+ * Answers SVG by default and JSON with `?format=json`, because the same data
+ * serves a README badge and a script. Errors render as a card too: a broken
+ * image in a profile README tells the reader nothing, an error card tells them
+ * what went wrong.
+ *
+ * @module api/issues
+ */
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchGitHubData } from '@/lib/github';
 import { renderIssueStatsCard } from '@/lib/renderers/issues-card';

@@ -1,3 +1,14 @@
+/**
+ * A trophy per threshold crossed.
+ *
+ * Thresholds are fixed and generous on purpose. A trophy nobody can earn is decoration.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/trophies-card
+ */
 import { GitHubUserRawData } from '../github';
 import { resolveTheme } from '../themes';
 import { escapeXml, formatNumber } from '../utils';

@@ -1,3 +1,14 @@
+/**
+ * Issues opened, closed and the ratio between them.
+ *
+ * Small, fixed layout: three stats and a title.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/issues-card
+ */
 import { GitHubUserRawData } from '../github';
 import { resolveTheme } from '../themes';
 import { formatNumber, SVG_ICONS } from '../utils';

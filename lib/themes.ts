@@ -1,3 +1,12 @@
+/**
+ * Named palettes, and the per-request colour overrides that beat them.
+ *
+ * Any card accepts `theme=` plus individual colour parameters. The overrides
+ * go through `sanitizeHex`, because these values are interpolated straight
+ * into SVG attributes: an unchecked one closes the attribute and writes markup.
+ *
+ * @module lib/themes
+ */
 export interface ThemeColors {
   bg: string;
   cardBg?: string;

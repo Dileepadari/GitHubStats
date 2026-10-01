@@ -1,3 +1,12 @@
+/**
+ * `GET /api/health` - is the database reachable, and what has the platform served.
+ *
+ * Reports the database as `unhealthy: <reason>` rather than failing, because
+ * every card still renders without Postgres; losing the cache is a degradation,
+ * not an outage, and the endpoint should say which.
+ *
+ * @module api/health
+ */
 import { NextResponse } from 'next/server';
 import { getPlatformStats, getDbPool } from '@/lib/db';
 import { errorMessage } from '@/lib/utils';

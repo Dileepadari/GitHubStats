@@ -1,3 +1,14 @@
+/**
+ * GitHub's profile achievements, recomputed from public data.
+ *
+ * Icons are SVG paths from the shared set rather than emoji: an emoji in an SVG renders with whatever font the viewer happens to have, which on a Linux browser without an emoji font is a row of empty boxes.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/achievements-card
+ */
 import { GitHubUserRawData } from '../github';
 import { resolveTheme } from '../themes';
 import { escapeXml, SVG_ICONS } from '../utils';

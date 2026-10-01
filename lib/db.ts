@@ -1,3 +1,15 @@
+/**
+ * Postgres, and what happens when it is not there.
+ *
+ * Two jobs: a one-hour response cache keyed by username, and the profile view
+ * counter. Both degrade to an in-process `Map` when a query fails, which keeps
+ * cards rendering on a deployment with no `DATABASE_URL` at the cost of a cache
+ * that is per-instance and a count that resets. That trade is deliberate: a
+ * profile README is a public page, and a missing database should not turn it
+ * into a broken image.
+ *
+ * @module lib/db
+ */
 import { Pool } from 'pg';
 import { errorMessage } from './utils';
 

@@ -1,3 +1,14 @@
+/**
+ * Pull requests opened, merged and reviewed.
+ *
+ * The sibling of the issues card, same geometry so the two sit together in a README.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/prs-card
+ */
 import { GitHubUserRawData } from '../github';
 import { resolveTheme } from '../themes';
 import { formatNumber, SVG_ICONS } from '../utils';

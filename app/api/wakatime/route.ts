@@ -1,3 +1,13 @@
+/**
+ * `GET /api/wakatime` - coding time from WakaTime, which is a different API and may be absent.
+ *
+ * Answers SVG by default and JSON with `?format=json`, because the same data
+ * serves a README badge and a script. Errors render as a card too: a broken
+ * image in a profile README tells the reader nothing, an error card tells them
+ * what went wrong.
+ *
+ * @module api/wakatime
+ */
 import { NextRequest, NextResponse } from 'next/server';
 import { renderWakaTimeCard, WakaTimeData } from '@/lib/renderers/wakatime-card';
 import { renderErrorCard } from '@/lib/renderers/error-card';

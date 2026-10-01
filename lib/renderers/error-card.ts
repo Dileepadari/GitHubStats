@@ -1,3 +1,14 @@
+/**
+ * What a reader sees when something went wrong.
+ *
+ * This exists so a failure is legible in a README. A broken image says nothing; a card that says "User not found" says everything.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/error-card
+ */
 import { resolveTheme } from '../themes';
 import { escapeXml } from '../utils';
 

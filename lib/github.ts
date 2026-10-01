@@ -1,3 +1,14 @@
+/**
+ * Everything this service knows about talking to GitHub.
+ *
+ * Two paths to the same shape: GraphQL when a token is configured, which gets
+ * the contribution calendar in one request, and REST otherwise, which cannot
+ * and approximates. GraphQL failures fall back to REST, so both paths must be
+ * equally safe with untrusted input - see `isValidGitHubUsername`, which exists
+ * because the REST path interpolates a name into an API URL.
+ *
+ * @module lib/github
+ */
 import { getCachedData, setCachedData } from './db';
 import { errorMessage } from './utils';
 

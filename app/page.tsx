@@ -1,3 +1,12 @@
+/**
+ * The landing page: a live card builder.
+ *
+ * Every endpoint this service exposes, with its options rendered as controls,
+ * so the URL to paste into a profile README is produced by using the thing
+ * rather than by reading the documentation.
+ *
+ * @module app/page
+ */
 'use client';
 
 import React, { useState, useEffect } from 'react';

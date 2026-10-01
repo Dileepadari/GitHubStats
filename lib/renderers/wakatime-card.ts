@@ -1,3 +1,14 @@
+/**
+ * Coding time by language, from WakaTime.
+ *
+ * The only card whose data does not come from GitHub, and the only one that is routinely absent: not everyone has WakaTime, and the card says so rather than rendering empty bars.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/wakatime-card
+ */
 import { resolveTheme } from '../themes';
 import { escapeXml } from '../utils';
 

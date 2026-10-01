@@ -1,3 +1,14 @@
+/**
+ * The contribution calendar, drawn in isometric projection.
+ *
+ * Height encodes the day count. Decorative rather than precise, and it is the one card where reading an exact value back is not the point.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/calendar-3d
+ */
 import { GitHubUserRawData } from '../github';
 import { resolveTheme } from '../themes';
 import { formatNumber } from '../utils';

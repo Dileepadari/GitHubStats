@@ -1,3 +1,14 @@
+/**
+ * The headline card: totals on the left, a grade ring on the right.
+ *
+ * Width changes with `hide_rank`, because leaving a hole where the ring was looks like a failed render rather than a choice.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/stats-card
+ */
 import { GitHubUserRawData } from '../github';
 import { resolveTheme } from '../themes';
 import { escapeXml, formatNumber, calculateGrade, SVG_ICONS } from '../utils';

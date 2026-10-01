@@ -1,3 +1,14 @@
+/**
+ * `GET /api/counter` - a profile view counter.
+ *
+ * The one endpoint here that writes: each request increments a per-user count
+ * in Postgres unless `increment=false`, so a README embed is a view and a
+ * preview in this project's own page is not. The count survives without a
+ * database by falling back to an in-process map, which is wrong across
+ * instances and honest about it rather than failing the card.
+ *
+ * @module api/counter
+ */
 import { NextRequest, NextResponse } from 'next/server';
 import { incrementProfileViews, getProfileViews } from '@/lib/db';
 import { renderProfileCounter, type CounterCardOptions } from '@/lib/renderers/counter-card';

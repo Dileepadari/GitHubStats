@@ -1,3 +1,14 @@
+/**
+ * A profile view counter, in several badge styles.
+ *
+ * Width is computed from the label length rather than fixed, because a badge that clips its own text is worse than a wide one.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/counter-card
+ */
 import { resolveTheme } from '../themes';
 import { escapeXml } from '../utils';
 

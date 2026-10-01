@@ -1,3 +1,13 @@
+/**
+ * `GET /api/prs` - pull requests opened, merged and reviewed.
+ *
+ * Answers SVG by default and JSON with `?format=json`, because the same data
+ * serves a README badge and a script. Errors render as a card too: a broken
+ * image in a profile README tells the reader nothing, an error card tells them
+ * what went wrong.
+ *
+ * @module api/prs
+ */
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchGitHubData } from '@/lib/github';
 import { renderPRStatsCard } from '@/lib/renderers/prs-card';

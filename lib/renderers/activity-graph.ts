@@ -1,3 +1,14 @@
+/**
+ * Contributions over time, as a filled line graph.
+ *
+ * The y axis is scaled to the busiest day in the window, so two users are not comparable by eye - each graph describes its own subject.
+ *
+ * Every string that came from GitHub goes through `escapeXml` on its way into
+ * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
+ * is not a rendering bug, it is script execution for whoever opens the card.
+ *
+ * @module renderers/activity-graph
+ */
 import { GitHubUserRawData } from '../github';
 import { resolveTheme } from '../themes';
 import { escapeXml } from '../utils';

@@ -1,3 +1,8 @@
+/**
+ * The root layout: fonts, metadata and the shell every page renders inside.
+ *
+ * @module app/layout
+ */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
