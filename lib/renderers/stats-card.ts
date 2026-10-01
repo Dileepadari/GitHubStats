@@ -1,7 +1,7 @@
 /**
- * The headline card: totals on the left, a grade ring on the right.
+ * The headline card: totals on the left, the grade on a trophy on the right.
  *
- * Width changes with `hide_rank`, because leaving a hole where the ring was looks like a failed render rather than a choice.
+ * Width changes with `hide_rank`, because leaving a hole where the trophy was looks like a failed render rather than a choice.
  *
  * Every string that came from GitHub goes through `escapeXml` on its way into
  * the markup: this output is served as `image/svg+xml`, so an unescaped `<`
@@ -53,10 +53,6 @@ export function renderStatsCard(user: GitHubUserRawData, options: StatsCardOptio
     { label: 'Contributed To', value: formatNumber(user.contributedTo), icon: SVG_ICONS.repo },
   ];
 
-  const radius = 38;
-  const circ = 2 * Math.PI * radius;
-  const strokeDashoffset = circ - (circ * grade.percentile) / 100;
-
   return `
 <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${title}">
   <defs>
@@ -74,25 +70,16 @@ export function renderStatsCard(user: GitHubUserRawData, options: StatsCardOptio
     .header { font: 600 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; fill: ${theme.title}; }
     .stat-label { font: 400 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; fill: ${theme.text}; }
     .stat-val { font: 700 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; fill: ${theme.text}; }
-    .grade-text { font: 800 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; fill: ${grade.color}; text-anchor: middle; dominant-baseline: central; }
+    .grade-text { font: 800 38px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; fill: ${theme.bg}; text-anchor: middle; dominant-baseline: central; }
+    .trophy-cup { fill: url(#grade-ring-grad); }
+    .trophy-handle { stroke: ${grade.color}; stroke-width: 7; fill: none; stroke-opacity: 0.8; stroke-linecap: round; }
+    .trophy-base { fill: ${grade.color}; fill-opacity: 0.9; }
+    /* Opacity only. A CSS transform here would replace the group's own
+       transform attribute, which is what positions the trophy on the card, and
+       the whole badge would animate itself into the top-left corner. */
+    .trophy { animation: fadeIn 0.9s ease-out forwards; }
     .grade-label { font: 600 9px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; fill: ${theme.subtext}; text-anchor: middle; letter-spacing: 0.5px; }
     .card-bg { fill: url(#bg-grad-stats); ${options.hide_border ? '' : `stroke: ${theme.border}; stroke-width: 1.2;`} rx: ${rx}px; }
-    .progress-ring-bg { stroke: ${theme.cardBg || theme.border}; stroke-width: 5.5; fill: none; stroke-opacity: 0.8; }
-    .progress-ring-val {
-      stroke: url(#grade-ring-grad);
-      stroke-width: 5.5;
-      stroke-linecap: round;
-      fill: none;
-      stroke-dasharray: ${circ.toFixed(2)};
-      stroke-dashoffset: ${strokeDashoffset.toFixed(2)};
-      transform: rotate(-90deg);
-      transform-origin: 50% 50%;
-      animation: ring 1.2s ease-in-out forwards;
-    }
-    @keyframes ring {
-      from { stroke-dashoffset: ${circ.toFixed(2)}; }
-      to { stroke-dashoffset: ${strokeDashoffset.toFixed(2)}; }
-    }
     .fade-item {
       animation: fadeIn 0.8s ease-in-out forwards;
     }
@@ -133,11 +120,15 @@ export function renderStatsCard(user: GitHubUserRawData, options: StatsCardOptio
   ${
     !options.hide_rank
       ? `
-  <g transform="translate(${width - 80}, 112)">
-    <circle cx="0" cy="0" r="${radius}" class="progress-ring-bg" />
-    <circle cx="0" cy="0" r="${radius}" class="progress-ring-val" />
-    <text x="0" y="-3" class="grade-text">${grade.grade}</text>
-    <text x="0" y="16" class="grade-label">TOP ${(100 - grade.percentile).toFixed(1)}%</text>
+  <g transform="translate(${width - 103}, 100)" class="trophy">
+    <path d="M -38 -46 C -70 -44, -70 -6, -38 -10" class="trophy-handle" />
+    <path d="M 38 -46 C 70 -44, 70 -6, 38 -10" class="trophy-handle" />
+    <path d="M -38 -54 H 38 V -28 C 38 2, 20 22, 0 22 C -20 22, -38 2, -38 -28 Z" class="trophy-cup" />
+    <rect x="-7" y="22" width="14" height="20" class="trophy-base" />
+    <rect x="-26" y="42" width="52" height="9" rx="3" class="trophy-base" />
+    <rect x="-34" y="51" width="68" height="8" rx="3" class="trophy-base" />
+    <text x="0" y="-17" class="grade-text">${grade.grade}</text>
+    <text x="0" y="74" class="grade-label">TOP ${(100 - grade.percentile).toFixed(1)}%</text>
   </g>`
       : ''
   }
