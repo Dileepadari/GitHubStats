@@ -1,5 +1,5 @@
-import { ThemeColors, resolveTheme } from '../themes';
-import { escapeXml, formatNumber } from '../utils';
+import { resolveTheme } from '../themes';
+import { escapeXml } from '../utils';
 
 export interface CounterCardOptions {
   theme?: string | null;

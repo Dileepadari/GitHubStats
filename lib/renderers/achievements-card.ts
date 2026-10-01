@@ -1,5 +1,5 @@
 import { GitHubUserRawData } from '../github';
-import { ThemeColors, resolveTheme } from '../themes';
+import { resolveTheme } from '../themes';
 import { escapeXml, SVG_ICONS } from '../utils';
 
 export interface AchievementsCardOptions {

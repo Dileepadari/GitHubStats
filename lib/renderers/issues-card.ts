@@ -1,6 +1,6 @@
 import { GitHubUserRawData } from '../github';
-import { ThemeColors, resolveTheme } from '../themes';
-import { escapeXml, formatNumber, SVG_ICONS } from '../utils';
+import { resolveTheme } from '../themes';
+import { formatNumber, SVG_ICONS } from '../utils';
 
 export interface IssueStatsCardOptions {
   theme?: string | null;

@@ -1,5 +1,5 @@
 import { GitHubUserRawData } from '../github';
-import { ThemeColors, resolveTheme } from '../themes';
+import { resolveTheme } from '../themes';
 import { escapeXml, formatNumber, calculateGrade } from '../utils';
 
 export interface SummaryCardOptions {

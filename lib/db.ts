@@ -184,7 +184,7 @@ export async function getPlatformStats(): Promise<{
       totalViews: parseInt(viewsRes.rows[0]?.views || '0', 10),
       cachedRecords: parseInt(cacheRes.rows[0]?.caches || '0', 10),
     };
-  } catch (err: unknown) {
+  } catch {
     return {
       totalTrackedUsers: memoryViews.size,
       totalViews: Array.from(memoryViews.values()).reduce((a, b) => a + b, 0),

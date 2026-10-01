@@ -1,4 +1,4 @@
-import { ThemeColors, resolveTheme } from '../themes';
+import { resolveTheme } from '../themes';
 import { escapeXml } from '../utils';
 
 export interface WakaTimeData {

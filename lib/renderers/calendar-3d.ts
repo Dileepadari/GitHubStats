@@ -1,6 +1,6 @@
 import { GitHubUserRawData } from '../github';
-import { ThemeColors, resolveTheme } from '../themes';
-import { escapeXml, formatNumber } from '../utils';
+import { resolveTheme } from '../themes';
+import { formatNumber } from '../utils';
 
 export interface Calendar3DOptions {
   theme?: string | null;
