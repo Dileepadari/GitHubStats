@@ -13,7 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { incrementProfileViews, getProfileViews } from '@/lib/db';
 import { renderProfileCounter, type CounterCardOptions } from '@/lib/renderers/counter-card';
 import { renderErrorCard } from '@/lib/renderers/error-card';
-import { errorMessage } from '@/lib/utils';
+import { errorMessage, hashVisitorIp } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       views = await incrementProfileViews(username, {
         userAgent,
         referrer,
-        ipHash: forwardedFor ? forwardedFor.split(',')[0].trim() : undefined,
+        ipHash: hashVisitorIp(forwardedFor?.split(',')[0].trim()) ?? undefined,
       });
     } else {
       views = await getProfileViews(username);

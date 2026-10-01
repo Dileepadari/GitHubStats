@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 /**
  * Escapes special XML characters to prevent SVG injection/XSS vulnerabilities
  */
@@ -13,6 +15,27 @@ export function errorMessage(err: unknown): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   return 'Unknown error';
+}
+
+/**
+ * A salted, truncated SHA-256 of a visitor IP, or null when it cannot be done
+ * safely.
+ *
+ * The column this feeds is called `ip_hash` and the field was called `ipHash`,
+ * and until 2026-10-01 both held the **raw address** straight off
+ * `x-forwarded-for`. A name that claims a property the value does not have is
+ * worse than no name: it is why nobody noticed that viewing a card wrote the
+ * viewer's IP to a database.
+ *
+ * Without a salt this returns null rather than a hash. An unsalted hash of an
+ * IPv4 address is not anonymisation - the whole space is four billion values,
+ * which a laptop reverses completely in minutes - so hashing without one would
+ * restore exactly the false comfort the old name gave.
+ */
+export function hashVisitorIp(ip: string | undefined): string | null {
+  const salt = process.env.IP_HASH_SALT;
+  if (!ip || !salt) return null;
+  return createHash('sha256').update(`${salt}:${ip}`).digest('hex').slice(0, 32);
 }
 
 export function escapeXml(unsafe: string | number | undefined | null): string {
