@@ -1,0 +1,79 @@
+name: CI
+
+# Push and pull request only. No schedule: a cron on a repository that changes
+# rarely spends minutes to tell you nothing changed.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint, type check, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # `next lint` is gone in Next 16, so ESLint runs directly. This repo had
+      # 28 errors when CI was first added, all of them `any` or a React effect
+      # rule, because nothing had ever run it.
+      - name: Lint
+        run: npm run lint
+
+      # `next build` type checks as part of the build, but only for files the
+      # build reaches. tsc covers the whole project, including anything not yet
+      # imported from a route.
+      - name: Type check
+        run: npx tsc --noEmit
+
+      # DATABASE_URL is deliberately absent: the cache layer is designed to fall
+      # back to memory when Postgres is unreachable, and the build must not need
+      # a database. If this step ever starts needing one, that fallback broke.
+      - name: Build
+        run: npm run build
+
+  cards:
+    name: Every card renders valid SVG
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # The whole product is SVG strings built by template literal. A renderer
+      # that emits malformed XML still "works" in every test that only checks
+      # for a non-empty string, and then draws nothing in a README.
+      - name: Render and parse
+        run: npm run check-cards
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Full audit, not --omit=dev: a critical advisory in Next itself
+      # (GHSA-vcvr-r3jv-pc5j, RCE in next/og) was sitting here unnoticed.
+      - name: npm audit
+        run: npm audit --audit-level=high
