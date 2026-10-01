@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { renderWakaTimeCard, WakaTimeData } from '@/lib/renderers/wakatime-card';
 import { renderErrorCard } from '@/lib/renderers/error-card';
+import { errorMessage } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
+
+/** One row of a WakaTime breakdown: the same shape for languages, editors and systems. */
+interface WakaTimeEntry {
+  name?: string;
+  percent?: number;
+  text?: string;
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -33,17 +41,17 @@ export async function GET(request: NextRequest) {
         wakaData = {
           humanReadableTotal: d.human_readable_total || '0 hrs',
           dailyAverage: d.human_readable_daily_average || '0 hrs',
-          languages: (d.languages || []).map((l: any) => ({
+          languages: (d.languages || []).map((l: WakaTimeEntry) => ({
             name: l.name,
             percent: l.percent || 0,
             text: l.text || '',
           })),
-          editors: (d.editors || []).map((e: any) => ({
+          editors: (d.editors || []).map((e: WakaTimeEntry) => ({
             name: e.name,
             percent: e.percent || 0,
             text: e.text || '',
           })),
-          operatingSystems: (d.operating_systems || []).map((o: any) => ({
+          operatingSystems: (d.operating_systems || []).map((o: WakaTimeEntry) => ({
             name: o.name,
             percent: o.percent || 0,
             text: o.text || '',
@@ -52,8 +60,8 @@ export async function GET(request: NextRequest) {
         };
       }
     }
-  } catch (err: any) {
-    console.warn(`WakaTime lookup for ${username} error:`, err.message);
+  } catch (err: unknown) {
+    console.warn(`WakaTime lookup for ${username} error:`, errorMessage(err));
   }
 
   // Fallback defaults if no public WakaTime profile

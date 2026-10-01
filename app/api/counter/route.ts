@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { incrementProfileViews, getProfileViews } from '@/lib/db';
-import { renderProfileCounter } from '@/lib/renderers/counter-card';
+import { renderProfileCounter, type CounterCardOptions } from '@/lib/renderers/counter-card';
 import { renderErrorCard } from '@/lib/renderers/error-card';
+import { errorMessage } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,7 +49,7 @@ export async function GET(request: NextRequest) {
       theme: searchParams.get('theme'),
       bg_color: searchParams.get('bg_color'),
       text_color: searchParams.get('text_color'),
-      style: (searchParams.get('style') as any) || 'flat',
+      style: (searchParams.get('style') as CounterCardOptions['style']) || 'flat',
       label: searchParams.get('label') || 'Profile Views',
       pad_zeros: searchParams.get('pad_zeros')
         ? parseInt(searchParams.get('pad_zeros')!, 10)
@@ -63,11 +64,11 @@ export async function GET(request: NextRequest) {
         Expires: '0',
       },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (format === 'json') {
-      return NextResponse.json({ error: err.message }, { status: 500 });
+      return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
     }
-    return new NextResponse(renderErrorCard(err.message), {
+    return new NextResponse(renderErrorCard(errorMessage(err)), {
       headers: { 'Content-Type': 'image/svg+xml; charset=utf-8' },
     });
   }

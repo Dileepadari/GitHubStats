@@ -1,6 +1,6 @@
 import { GitHubUserRawData } from '../github';
 import { ThemeColors, resolveTheme } from '../themes';
-import { escapeXml } from '../utils';
+import { escapeXml, SVG_ICONS } from '../utils';
 
 export interface AchievementsCardOptions {
   theme?: string | null;
@@ -35,42 +35,42 @@ export function renderAchievementsCard(
       desc: 'Merged pull requests',
       tier: user.mergedPRs >= 16 ? 'x2' : undefined,
       unlocked: user.mergedPRs > 0,
-      icon: '🦈',
+      icon: SVG_ICONS.pr,
       badgeBg: '#38bdf8',
     },
     {
       name: 'Quickdraw',
       desc: 'Closed an issue or PR quickly',
       unlocked: user.closedIssues > 0 || user.mergedPRs > 0,
-      icon: '⚡',
+      icon: SVG_ICONS.clock,
       badgeBg: '#f59e0b',
     },
     {
       name: 'Starstruck',
       desc: 'Repository with 16+ stars',
       unlocked: user.totalStars >= 16,
-      icon: '⭐',
+      icon: SVG_ICONS.star,
       badgeBg: '#fbbf24',
     },
     {
       name: 'Galaxy Brain',
       desc: 'Helpful discussion answer',
       unlocked: user.totalIssues >= 5 || user.contributedTo >= 3,
-      icon: '🧠',
+      icon: SVG_ICONS.comment,
       badgeBg: '#a855f7',
     },
     {
       name: 'Arctic Code Vault',
       desc: '2020 GitHub archive',
       unlocked: joinedYear <= 2020,
-      icon: '❄️',
+      icon: SVG_ICONS.archive,
       badgeBg: '#0ea5e9',
     },
     {
       name: 'YOLO',
       desc: 'Merged code without review',
       unlocked: user.totalCommits > 10,
-      icon: '🚀',
+      icon: SVG_ICONS.commit,
       badgeBg: '#ec4899',
     },
   ];
@@ -123,7 +123,7 @@ export function renderAchievementsCard(
     <g transform="translate(${x}, ${y})" opacity="${opacity}">
       <rect x="0" y="0" width="${itemWidth}" height="${itemHeight}" rx="8" fill="${theme.cardBg || '#161b22'}" stroke="${item.unlocked ? item.badgeBg : theme.border}" stroke-width="1.2" stroke-opacity="0.65" />
       <circle cx="${itemWidth / 2}" cy="26" r="16" fill="${item.badgeBg}" fill-opacity="${item.unlocked ? 0.22 : 0.08}" />
-      <text x="${itemWidth / 2}" y="32" font-size="16" text-anchor="middle">${item.icon}</text>
+      <g transform="translate(${itemWidth / 2 - 8}, 18)" fill="${item.badgeBg}">${item.icon}</g>
       ${
         item.tier
           ? `

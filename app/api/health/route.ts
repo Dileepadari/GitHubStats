@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getPlatformStats, getDbPool } from '@/lib/db';
+import { errorMessage } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,8 +14,8 @@ export async function GET() {
     const t0 = Date.now();
     await db.query('SELECT 1');
     dbLatency = Date.now() - t0;
-  } catch (err: any) {
-    dbStatus = `unhealthy: ${err.message}`;
+  } catch (err: unknown) {
+    dbStatus = `unhealthy: ${errorMessage(err)}`;
   }
 
   const platformStats = await getPlatformStats();

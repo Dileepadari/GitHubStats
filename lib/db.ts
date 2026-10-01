@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { errorMessage } from './utils';
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -18,14 +19,15 @@ export function getDbPool(): Pool {
     });
 
     pool.on('error', (err) => {
-      console.error('Unexpected PostgreSQL client error:', err.message);
+      console.error('Unexpected PostgreSQL client error:', errorMessage(err));
     });
   }
   return pool;
 }
 
 // In-memory fallback if database connection has temporary issues
-const memoryCache = new Map<string, { data: any; expiresAt: number }>();
+// Values are whatever a caller cached; each read is cast by its own generic.
+const memoryCache = new Map<string, { data: unknown; expiresAt: number }>();
 const memoryViews = new Map<string, number>();
 
 /**
@@ -63,14 +65,14 @@ export async function incrementProfileViews(
         VALUES ($1, $2, $3, $4)
         `,
         [cleanUsername, metadata.ipHash || null, metadata.userAgent || null, metadata.referrer || null]
-      ).catch((err) => console.warn('Failed to insert view log:', err.message));
+      ).catch((err) => console.warn('Failed to insert view log:', errorMessage(err)));
     }
 
     // Keep memory fallback in sync
     memoryViews.set(cleanUsername, views);
     return views;
-  } catch (err: any) {
-    console.warn(`PostgreSQL increment views fallback for ${cleanUsername}:`, err.message);
+  } catch (err: unknown) {
+    console.warn(`PostgreSQL increment views fallback for ${cleanUsername}:`, errorMessage(err));
     const current = (memoryViews.get(cleanUsername) || 0) + 1;
     memoryViews.set(cleanUsername, current);
     return current;
@@ -96,8 +98,8 @@ export async function getProfileViews(username: string): Promise<number> {
       return count;
     }
     return memoryViews.get(cleanUsername) || 0;
-  } catch (err: any) {
-    console.warn(`PostgreSQL get views fallback for ${cleanUsername}:`, err.message);
+  } catch (err: unknown) {
+    console.warn(`PostgreSQL get views fallback for ${cleanUsername}:`, errorMessage(err));
     return memoryViews.get(cleanUsername) || 0;
   }
 }
@@ -124,8 +126,8 @@ export async function getCachedData<T>(cacheKey: string): Promise<T | null> {
       return data as T;
     }
     return null;
-  } catch (err: any) {
-    console.warn(`PostgreSQL getCachedData fallback for ${cacheKey}:`, err.message);
+  } catch (err: unknown) {
+    console.warn(`PostgreSQL getCachedData fallback for ${cacheKey}:`, errorMessage(err));
     return null;
   }
 }
@@ -155,8 +157,8 @@ export async function setCachedData<T>(
       `,
       [cacheKey, JSON.stringify(data), ttlSeconds]
     );
-  } catch (err: any) {
-    console.warn(`PostgreSQL setCachedData fallback for ${cacheKey}:`, err.message);
+  } catch (err: unknown) {
+    console.warn(`PostgreSQL setCachedData fallback for ${cacheKey}:`, errorMessage(err));
   }
 }
 
@@ -182,7 +184,7 @@ export async function getPlatformStats(): Promise<{
       totalViews: parseInt(viewsRes.rows[0]?.views || '0', 10),
       cachedRecords: parseInt(cacheRes.rows[0]?.caches || '0', 10),
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       totalTrackedUsers: memoryViews.size,
       totalViews: Array.from(memoryViews.values()).reduce((a, b) => a + b, 0),

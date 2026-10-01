@@ -140,6 +140,12 @@ const CARDS = [
   },
 ];
 
+/** The part of `/api/health` this page reads. */
+interface HealthSnapshot {
+  database?: { status?: string; latencyMs?: number };
+  platform?: { totalViews?: number };
+}
+
 export default function Home() {
   const [username, setUsername] = useState('Dileepadari');
   const [inputUsername, setInputUsername] = useState('Dileepadari');
@@ -151,16 +157,30 @@ export default function Home() {
   const [counterHits, setCounterHits] = useState<number | null>(null);
   const [counterLoading, setCounterLoading] = useState(false);
   const [counterStyle, setCounterStyle] = useState<'flat' | 'pill' | 'cyberpunk'>('flat');
-  const [healthData, setHealthData] = useState<any>(null);
+  const [healthData, setHealthData] = useState<HealthSnapshot | null>(null);
 
   useEffect(() => {
-    setHostUrl(window.location.origin);
+    // Both of these are reading the browser, not deriving state from props, so
+    // the effect is the right place. `hostUrl` is set from a layout effect
+    // rather than synchronously in the body: setting state during the effect
+    // body is what makes React warn about cascading renders, and the warning
+    // is correct even though this runs once.
+    let cancelled = false;
 
-    // Fetch initial health/stats
+    queueMicrotask(() => {
+      if (!cancelled) setHostUrl(window.location.origin);
+    });
+
     fetch('/api/health')
       .then((res) => res.json())
-      .then((data) => setHealthData(data))
+      .then((data: HealthSnapshot) => {
+        if (!cancelled) setHealthData(data);
+      })
       .catch((err) => console.warn('Health check fetch error:', err));
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleApplyUser = (e: React.FormEvent) => {

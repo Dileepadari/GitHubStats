@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { fetchGitHubData } from '@/lib/github';
 import { renderTrophiesCard } from '@/lib/renderers/trophies-card';
 import { renderErrorCard } from '@/lib/renderers/error-card';
+import { errorMessage } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,11 +51,11 @@ export async function GET(request: NextRequest) {
         'Cache-Control': 'public, max-age=14400, s-maxage=14400, stale-while-revalidate=86400',
       },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (format === 'json') {
-      return NextResponse.json({ error: err.message }, { status: 500 });
+      return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
     }
-    return new NextResponse(renderErrorCard(err.message), {
+    return new NextResponse(renderErrorCard(errorMessage(err)), {
       headers: { 'Content-Type': 'image/svg+xml; charset=utf-8' },
     });
   }

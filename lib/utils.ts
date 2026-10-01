@@ -1,6 +1,20 @@
 /**
  * Escapes special XML characters to prevent SVG injection/XSS vulnerabilities
  */
+/**
+ * The message from something thrown.
+ *
+ * `catch (err: any)` then `err.message` is a lie the type checker was told to
+ * accept: anything can be thrown, including a string or undefined, and
+ * `.message` on those is undefined rather than an error. Catching `unknown`
+ * and narrowing here keeps one answer for the whole codebase.
+ */
+export function errorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'string') return err;
+  return 'Unknown error';
+}
+
 export function escapeXml(unsafe: string | number | undefined | null): string {
   if (unsafe === undefined || unsafe === null) return '';
   return String(unsafe)
@@ -79,6 +93,8 @@ export const SVG_ICONS = {
   issue: '<path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm9 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-.25-6.25a.75.75 0 0 0-1.5 0v3.5a.75.75 0 0 0 1.5 0v-3.5z"/>',
   repo: '<path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5v-9Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8V1.5Z"/>',
   fire: '<path fill-rule="evenodd" d="M8.28 1.284a.75.75 0 0 0-1.06 0l-.82.82c-.8.8-1.4 1.83-1.4 2.966 0 .42.083.82.235 1.189A4.75 4.75 0 0 0 3.25 10.75c0 2.623 2.127 4.75 4.75 4.75s4.75-2.127 4.75-4.75c0-1.928-1.15-3.587-2.793-4.32a4.49 4.49 0 0 0 .543-2.11c0-1.392-.76-2.55-1.72-3.036ZM8 3.5a1.5 1.5 0 0 1 1.5 1.5c0 .64-.38 1.21-.94 1.44a.75.75 0 0 0-.46.7 3.25 3.25 0 0 0 1.4 2.66c.92.65 1.5 1.72 1.5 2.95a3.25 3.25 0 0 1-6.5 0c0-1.45.83-2.7 2.05-3.29.35-.17.55-.54.5-9.25A1.5 1.5 0 0 1 8 3.5Z"/>',
+  comment: '<path fill-rule="evenodd" d="M1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0 1 13.25 12H9.06l-2.573 2.573A1.458 1.458 0 0 1 4 13.543V12H2.75A1.75 1.75 0 0 1 1 10.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h4.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>',
+  archive: '<path fill-rule="evenodd" d="M2.75 1.75a.25.25 0 0 0-.25.25v1.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25V2a.25.25 0 0 0-.25-.25ZM1 2c0-.966.784-1.75 1.75-1.75h10.5c.966 0 1.75.784 1.75 1.75v1.5a1.75 1.75 0 0 1-1.5 1.732V13.25A1.75 1.75 0 0 1 11.75 15h-7.5A1.75 1.75 0 0 1 2.5 13.25V5.232A1.75 1.75 0 0 1 1 3.5Zm3 3.25v8c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-8Zm2 1.5h4a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1 0-1.5Z"/>',
   trophy: '<path fill-rule="evenodd" d="M3.75 1.5a.75.75 0 0 0-.75.75v1.652c0 1.517.9 2.87 2.28 3.444A5.252 5.252 0 0 0 7.25 9.94V12H5.75a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5H8.75V9.94a5.252 5.252 0 0 0 1.97-2.594c1.38-.574 2.28-1.927 2.28-3.444V2.25a.75.75 0 0 0-.75-.75h-8.5ZM4.5 3h7v.902c0 .99-.57 1.884-1.46 2.275a.75.75 0 0 0-.45.548 3.75 3.75 0 0 1-3.18 2.763 3.75 3.75 0 0 1-3.18-2.763.75.75 0 0 0-.45-.548C2.07 5.786 1.5 4.892 1.5 3.902V3h3Z"/>',
   eye: '<path d="M1.5 8s3-5.5 6.5-5.5S14.5 8 14.5 8s-3 5.5-6.5 5.5S1.5 8 1.5 8Z"/><circle cx="8" cy="8" r="2.5"/>',
   clock: '<path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-3.25a.75.75 0 0 1 .75.75v3.19l2.22 1.33a.75.75 0 1 1-.77 1.28l-2.5-1.5A.75.75 0 0 1 7.25 9V5.5A.75.75 0 0 1 8 4.75Z"/>',
