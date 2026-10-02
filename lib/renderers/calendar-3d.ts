@@ -39,7 +39,11 @@ export function renderCalendar3D(
   const originY = 75;
 
   const levelColors: Record<number, { top: string; left: string; right: string }> = {
-    0: { top: '#161b22', left: '#0d1117', right: '#090d13' },
+    // The empty day. Derived from the theme's border rather than hardcoded,
+    // because a fixed #161b22 is a black cube on a white card: on the light
+    // theme the whole quiet half of the year, and the "Less" legend swatch,
+    // rendered as solid black.
+    0: { top: theme.border, left: `${theme.border}cc`, right: `${theme.border}99` },
     1: { top: '#0e4429', left: '#002914', right: '#001a0c' },
     2: { top: '#006d32', left: '#004a20', right: '#003316' },
     3: { top: '#26a641', left: '#1b782e', right: '#145c22' },
