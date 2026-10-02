@@ -1,3 +1,5 @@
+<!-- Generated from README.md by scripts/build-light-readme.mjs. Do not edit by hand. -->
+
 <div align="center">
 
 <picture>
@@ -24,7 +26,7 @@
 
 **[Developer documentation](./DEVDOC.md)** &middot; [Cards](#the-cards) &middot; [Endpoints](#endpoints) &middot; [Customising](#customising-a-card) &middot; [Run it](#run-it)
 
-<p><b>Dark mode</b> &middot; <a href="./README-light.md">View this page in light mode</a></p>
+<p><b>Light mode</b> &middot; <a href="./README.md">View this page in dark mode</a></p>
 
 </div>
 
@@ -47,29 +49,29 @@ theme is in **[README-light.md](./README-light.md)**.
 <table>
 <tr>
   <td width="33%" valign="top">
-    <img src="./docs/screenshots/dark/01-stats.png" alt="Stats card: stars, commits, pull requests, issues and repositories contributed to, with an S grade on a gold trophy" loading="lazy">
+    <img src="./docs/screenshots/light/01-stats.png" alt="Stats card: stars, commits, pull requests, issues and repositories contributed to, with an S grade on a gold trophy" loading="lazy">
     <p align="center"><b>Overview</b><br><sub>The headline totals, with the grade on a trophy.</sub></p>
   </td>
   <td width="33%" valign="top">
-    <img src="./docs/screenshots/dark/02-top-langs.png" alt="Most used languages as a stacked bar with six languages and their percentages" loading="lazy">
+    <img src="./docs/screenshots/light/02-top-langs.png" alt="Most used languages as a stacked bar with six languages and their percentages" loading="lazy">
     <p align="center"><b>Top languages</b><br><sub>By bytes written, which is what GitHub reports.</sub></p>
   </td>
   <td width="33%" valign="top">
-    <img src="./docs/screenshots/dark/03-streak.png" alt="Streak card: total contributions, current streak and longest streak in three panels" loading="lazy">
+    <img src="./docs/screenshots/light/03-streak.png" alt="Streak card: total contributions, current streak and longest streak in three panels" loading="lazy">
     <p align="center"><b>Streaks</b><br><sub>Total, current and longest, given equal weight.</sub></p>
   </td>
 </tr>
 <tr>
   <td width="33%" valign="top">
-    <img src="./docs/screenshots/dark/04-summary.png" alt="Summary card combining the profile, location, bio, four headline numbers and the top three languages" loading="lazy">
+    <img src="./docs/screenshots/light/04-summary.png" alt="Summary card combining the profile, location, bio, four headline numbers and the top three languages" loading="lazy">
     <p align="center"><b>Summary</b><br><sub>Everything on one card, for a README that wants one.</sub></p>
   </td>
   <td width="33%" valign="top">
-    <img src="./docs/screenshots/dark/05-trophies.png" alt="Six trophies for commits, stars, followers, pull requests, issues and account age, each with a letter grade" loading="lazy">
+    <img src="./docs/screenshots/light/05-trophies.png" alt="Six trophies for commits, stars, followers, pull requests, issues and account age, each with a letter grade" loading="lazy">
     <p align="center"><b>Trophies</b><br><sub>One per threshold crossed, graded.</sub></p>
   </td>
   <td width="33%" valign="top">
-    <img src="./docs/screenshots/dark/06-achievements.png" alt="GitHub achievements: Pull Shark, Quickdraw, Starstruck, Galaxy Brain, Arctic Code Vault and YOLO, with the unearned one dimmed" loading="lazy">
+    <img src="./docs/screenshots/light/06-achievements.png" alt="GitHub achievements: Pull Shark, Quickdraw, Starstruck, Galaxy Brain, Arctic Code Vault and YOLO, with the unearned one dimmed" loading="lazy">
     <p align="center"><b>Achievements</b><br><sub>Recomputed from public data. Unearned ones stay dim.</sub></p>
   </td>
 </tr>
@@ -78,11 +80,11 @@ theme is in **[README-light.md](./README-light.md)**.
 <table>
 <tr>
   <td width="50%" valign="top">
-    <img src="./docs/screenshots/dark/07-activity-graph.png" alt="Contribution activity for the last 30 days as a filled line graph with dated axis" loading="lazy">
+    <img src="./docs/screenshots/light/07-activity-graph.png" alt="Contribution activity for the last 30 days as a filled line graph with dated axis" loading="lazy">
     <p align="center"><b>Activity graph</b><br><sub>Thirty days, scaled to the busiest one.</sub></p>
   </td>
   <td width="50%" valign="top">
-    <img src="./docs/screenshots/dark/08-calendar-3d.png" alt="The contribution calendar drawn as isometric cubes, height and colour by day count" loading="lazy">
+    <img src="./docs/screenshots/light/08-calendar-3d.png" alt="The contribution calendar drawn as isometric cubes, height and colour by day count" loading="lazy">
     <p align="center"><b>3D calendar</b><br><sub>A year of contributions, height by count.</sub></p>
   </td>
 </tr>

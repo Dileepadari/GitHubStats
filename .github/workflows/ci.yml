@@ -77,3 +77,20 @@ jobs:
       # (GHSA-vcvr-r3jv-pc5j, RCE in next/og) was sitting here unnoticed.
       - name: npm audit
         run: npm audit --audit-level=high
+
+  readme:
+    name: The light README matches its source
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      # README-light.md is generated, never hand-edited. Regenerating it here
+      # is what stops the two pages drifting.
+      - name: Regenerate and compare
+        run: |
+          npm run build-light-readme
+          git diff --exit-code README-light.md
