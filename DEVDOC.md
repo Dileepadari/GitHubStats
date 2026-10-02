@@ -265,11 +265,17 @@ and two fetch paths, parsing the actual output catches more than asserting on su
 
 ## Continuous integration
 
+> `next typegen` runs before `tsc`. Next writes `LayoutProps` and `PageProps` into `.next/types`
+> during a build, so on a clean checkout a bare `tsc` fails on `app/layout.tsx` - a failure that
+> never reproduces locally, because an earlier build left the types behind. Reproduce it with
+> `rm -rf .next && npx tsc --noEmit`.
+
+
 `.github/workflows/ci.yml`, on push to `main`, on pull requests, and manually.
 
 | Job | Does |
 |---|---|
-| `build` | `npm run lint`, `tsc --noEmit`, `npm run build` |
+| `build` | `npm run lint`, `next typegen`, `tsc --noEmit`, `npm run build` |
 | `cards` | `npm run check-cards` |
 | `audit` | `npm audit --audit-level=high`, full, not `--omit=dev` |
 | `readme` | Regenerates `README-light.md` and fails on a diff |

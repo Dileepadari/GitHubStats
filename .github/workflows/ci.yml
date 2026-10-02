@@ -31,6 +31,15 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Next generates the route and layout types (`LayoutProps`, `PageProps`)
+      # into .next/types during a build. On a clean checkout they do not exist
+      # yet, so a bare `tsc` fails on app/layout.tsx with "Cannot find name
+      # 'LayoutProps'" - a failure that never reproduces locally, where an
+      # earlier build left the types behind. `typegen` writes them without the
+      # full build.
+      - name: Generate route types
+        run: npx next typegen
+
       # `next build` type checks as part of the build, but only for files the
       # build reaches. tsc covers the whole project, including anything not yet
       # imported from a route.

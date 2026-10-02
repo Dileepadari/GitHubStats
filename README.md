@@ -173,6 +173,7 @@ The schema for the three tables is `db/schema.sql`, and is safe to re-run.
 
 ```bash
 npm run lint          # eslint, zero errors expected
+npx next typegen      # writes .next/types, which tsc needs for LayoutProps
 npx tsc --noEmit      # the whole project, not only what the build reaches
 npm run check-cards   # renders all 13 cards and parses the SVG
 npm run build
